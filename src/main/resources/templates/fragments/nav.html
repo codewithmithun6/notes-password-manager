@@ -1,0 +1,13 @@
+<nav class="topbar" th:fragment="navigation">
+    <a class="wordmark" th:href="@{/notes}"><span class="mark">N</span> pocket<span>keeper</span></a>
+    <div class="nav-links">
+        <a th:href="@{/notes}">Notes</a>
+        <a th:href="@{/vault}">Password vault</a>
+    </div>
+    <div class="nav-account">
+        <span class="account-email" sec:authentication="name"></span>
+        <form th:action="@{/logout}" method="post">
+            <button class="text-button" type="submit">Sign out</button>
+        </form>
+    </div>
+</nav>

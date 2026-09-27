@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in | Pocketkeeper</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+    <a class="wordmark auth-brand" th:href="@{/login}"><span class="mark">N</span> pocket<span>keeper</span></a>
+    <section class="auth-panel">
+        <p class="eyebrow">YOUR PRIVATE DESK</p>
+        <h1>Good to have you back.</h1>
+        <p class="muted">Sign in to pick up where you left off.</p>
+        <div class="notice success" th:if="${param.registered}">Account created. Sign in to continue.</div>
+        <div class="notice" th:if="${param.logout}">You have been signed out.</div>
+        <div class="notice error" th:if="${param.error}">Email or password wasn't recognized.</div>
+        <form th:action="@{/login}" method="post" class="stack-form">
+            <label for="username">Email address</label>
+            <input id="username" name="username" type="email" autocomplete="email" required autofocus>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+            <button class="button primary full" type="submit">Sign in <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <p class="auth-foot">New here? <a th:href="@{/register}">Create an account</a></p>
+    </section>
+    <p class="auth-note">Your notes stay yours. Your vault stays locked.</p>
+</main>
+</body>
+</html>

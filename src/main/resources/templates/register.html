@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create account | Pocketkeeper</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+    <a class="wordmark auth-brand" th:href="@{/login}"><span class="mark">N</span> pocket<span>keeper</span></a>
+    <section class="auth-panel">
+        <p class="eyebrow">A QUIETER KIND OF ORGANIZED</p>
+        <h1>Make this space yours.</h1>
+        <p class="muted">One account for the things you want to keep close.</p>
+        <div class="notice error" th:if="${registrationError}" th:text="${registrationError}"></div>
+        <form th:action="@{/register}" th:object="${registrationForm}" method="post" class="stack-form">
+            <label for="email">Email address</label>
+            <input id="email" th:field="*{email}" type="email" autocomplete="email" required>
+            <small class="field-error" th:errors="*{email}"></small>
+            <label for="password">Password</label>
+            <input id="password" th:field="*{password}" type="password" autocomplete="new-password" required>
+            <small class="hint">Use at least 12 characters.</small>
+            <small class="field-error" th:errors="*{password}"></small>
+            <label for="confirmPassword">Confirm password</label>
+            <input id="confirmPassword" th:field="*{confirmPassword}" type="password" autocomplete="new-password" required>
+            <small class="field-error" th:errors="*{confirmPassword}"></small>
+            <button class="button primary full" type="submit">Create account <span aria-hidden="true">&#8594;</span></button>
+        </form>
+        <p class="auth-foot">Already registered? <a th:href="@{/login}">Sign in</a></p>
+    </section>
+    <p class="auth-note">Passwords are hashed. Vault secrets are encrypted before storage.</p>
+</main>
+</body>
+</html>

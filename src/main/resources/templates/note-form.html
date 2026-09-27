@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${pageTitle + ' | Pocketkeeper'}">Note | Pocketkeeper</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header th:replace="~{fragments/nav :: navigation}"></header>
+<main class="page-wrap narrow-page">
+    <a class="back-link" th:href="@{/notes}">&#8592; All notes</a>
+    <section class="page-heading compact-heading"><div><p class="eyebrow">PERSONAL NOTES</p><h1 th:text="${pageTitle}">New note</h1></div></section>
+    <form class="editor-form" th:action="@{/notes/save}" th:object="${noteForm}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <label for="title">Title</label>
+        <input class="title-input" id="title" th:field="*{title}" maxlength="160" placeholder="Give this note a name" required autofocus>
+        <small class="field-error" th:errors="*{title}"></small>
+        <label for="content">Your note</label>
+        <textarea id="content" th:field="*{content}" rows="16" maxlength="100000" placeholder="Start writing..." required></textarea>
+        <small class="field-error" th:errors="*{content}"></small>
+        <div class="form-actions"><a class="button quiet" th:href="@{/notes}">Cancel</a><button class="button primary" type="submit">Save note</button></div>
+    </form>
+</main>
+</body>
+</html>

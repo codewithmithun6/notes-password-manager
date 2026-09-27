@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Password vault | Pocketkeeper</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header th:replace="~{fragments/nav :: navigation}"></header>
+<main class="page-wrap">
+    <section class="page-heading">
+        <div><p class="eyebrow">ENCRYPTED VAULT</p><h1>Keys to your online life.</h1><p class="muted">Secrets are encrypted before they reach the database.</p></div>
+        <span class="lock-badge" aria-label="AES-GCM encrypted">&#128274; AES-GCM</span>
+    </section>
+    <section class="vault-layout">
+        <div class="vault-list">
+            <div class="section-label"><h2>Saved logins</h2><span th:text="${entries.size()}">0</span></div>
+            <div class="vault-empty" th:if="${entries.isEmpty()}"><p>No logins stored yet.</p><span>Add one here; it will be encrypted at rest.</span></div>
+            <article class="vault-row" th:each="entry : ${entries}">
+                <div class="vault-icon" aria-hidden="true">&#9672;</div>
+                <div class="vault-info">
+                    <h3 th:text="${entry.label}">Service name</h3>
+                    <p th:text="${entry.username == null || entry.username.isBlank() ? 'No username' : entry.username}">username</p>
+                    <a class="site-link" th:if="${entry.website != null && !entry.website.isBlank()}" th:href="${entry.website}" th:text="${entry.website}" target="_blank" rel="noopener noreferrer">website</a>
+                    <div class="revealed-secret" th:if="${revealedId == entry.id}"><span>Secret</span><code th:text="${revealedSecret}">secret</code></div>
+                    <span class="masked-secret" th:unless="${revealedId == entry.id}">••••••••••••</span>
+                </div>
+                <div class="vault-actions">
+                    <form th:action="@{/vault/{id}/reveal(id=${entry.id})}" method="post">
+                        <button class="small-action" type="submit" th:text="${revealedId == entry.id ? 'Shown' : 'Reveal'}">Reveal</button>
+                    </form>
+                    <a class="small-action" th:href="@{/vault/{id}/edit(id=${entry.id})}">Edit</a>
+                    <form th:action="@{/vault/{id}/delete(id=${entry.id})}" method="post" onsubmit="return confirm('Delete this login?')">
+                        <button class="small-action danger-text" type="submit">Delete</button>
+                    </form>
+                </div>
+            </article>
+        </div>
+        <aside class="vault-editor">
+            <p class="eyebrow" th:text="${editing} ? 'UPDATE ENTRY' : 'NEW ENTRY'">NEW ENTRY</p>
+            <h2 th:text="${editing} ? 'Edit login' : 'Add a login'">Add a login</h2>
+            <form th:action="@{/vault/save}" th:object="${vaultForm}" method="post" class="stack-form">
+                <input type="hidden" th:field="*{id}">
+                <label for="label">Name</label>
+                <input id="label" th:field="*{label}" maxlength="120" placeholder="e.g. Email" required>
+                <small class="field-error" th:errors="*{label}"></small>
+                <label for="username">Username or email</label>
+                <input id="username" th:field="*{username}" maxlength="190" autocomplete="off">
+                <small class="field-error" th:errors="*{username}"></small>
+                <label for="website">Website</label>
+                <input id="website" th:field="*{website}" type="url" maxlength="500" placeholder="https://example.com">
+                <small class="field-error" th:errors="*{website}"></small>
+                <label for="secret">Password or secret</label>
+                <input id="secret" th:field="*{secret}" type="password" maxlength="10000" autocomplete="new-password" th:required="${!editing}">
+                <small class="hint" th:if="${editing}">Leave blank to keep the current secret.</small>
+                <small class="field-error" th:errors="*{secret}"></small>
+                <button class="button primary full" type="submit" th:text="${editing} ? 'Save changes' : 'Encrypt and save'">Encrypt and save</button>
+                <a class="cancel-edit" th:if="${editing}" th:href="@{/vault}">Cancel editing</a>
+            </form>
+        </aside>
+    </section>
+</main>
+</body>
+</html>

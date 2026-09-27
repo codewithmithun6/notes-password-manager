@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your notes | Pocketkeeper</title><link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header th:replace="~{fragments/nav :: navigation}"></header>
+<main class="page-wrap">
+    <section class="page-heading">
+        <div><p class="eyebrow">PERSONAL NOTES</p><h1>A place for your thoughts.</h1><p class="muted">Private by default, easy to find again.</p></div>
+        <a class="button primary" th:href="@{/notes/new}"><span aria-hidden="true">+</span> New note</a>
+    </section>
+    <section class="toolbar">
+        <form class="search-form" th:action="@{/notes}" method="get" role="search">
+            <label class="sr-only" for="note-search">Search notes</label>
+            <span class="search-symbol" aria-hidden="true">&#9906;</span>
+            <input id="note-search" type="search" name="q" th:value="${q}" placeholder="Search title or content...">
+            <button class="button quiet" type="submit">Search</button>
+        </form>
+        <span class="result-count" th:text="|${notes.size()} ${notes.size() == 1 ? 'note' : 'notes'}|">0 notes</span>
+    </section>
+    <section class="note-list" th:if="${!notes.isEmpty()}">
+        <article class="note-row" th:each="note : ${notes}">
+            <div class="note-copy">
+                <h2><a th:href="@{/notes/{id}/edit(id=${note.id})}" th:text="${note.title}">Note title</a></h2>
+                <p th:text="${#strings.abbreviate(note.content, 180)}">Note content preview</p>
+                <time th:text="${#temporals.format(note.updatedAt, 'MMM d, yyyy · h:mm a')}">Updated today</time>
+            </div>
+            <div class="row-actions">
+                <a class="icon-link" th:href="@{/notes/{id}/edit(id=${note.id})}" aria-label="Edit note" title="Edit">&#9998;</a>
+                <form th:action="@{/notes/{id}/delete(id=${note.id})}" method="post" onsubmit="return confirm('Delete this note?')">
+                    <button class="icon-button danger-text" type="submit" aria-label="Delete note" title="Delete">&#215;</button>
+                </form>
+            </div>
+        </article>
+    </section>
+    <section class="empty-state" th:if="${notes.isEmpty()}">
+        <span class="empty-mark" aria-hidden="true">&#9998;</span>
+        <h2 th:text="${q.isEmpty() ? 'Your page is blank.' : 'No notes found.'}">Your page is blank.</h2>
+        <p th:text="${q.isEmpty() ? 'Start with a thought worth keeping.' : 'Try another title or phrase.'}">Start with a thought worth keeping.</p>
+        <a class="button outline" th:if="${q.isEmpty()}" th:href="@{/notes/new}">Write your first note</a>
+    </section>
+</main>
+</body>
+</html>
